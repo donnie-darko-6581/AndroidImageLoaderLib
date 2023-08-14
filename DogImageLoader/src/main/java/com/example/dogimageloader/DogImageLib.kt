@@ -9,7 +9,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class DogImageLib private constructor() : ImageLibBootStrap {
+class DogImageLib private constructor() : ImageLibBootStrap, ImageLibMethods {
 
     private var lib: DogImageLib? = null
     private var policy: DogImageLibPolicy? = null
@@ -39,10 +39,10 @@ class DogImageLib private constructor() : ImageLibBootStrap {
         )
         GlobalScope.launch {
             // loading first image separately for smooth ui
-            lib!!.dogRepo!!.getSingleDogImage()
+            lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
 
             // load next few images
-            lib!!.dogRepo!!.getRandomDogImages(policy!!.prefetchCount)
+            lib!!.dogRepo!!.getRandomDogImages(count = policy!!.prefetchCount, pageNo = pageNo)
         }
     }
 
@@ -50,6 +50,30 @@ class DogImageLib private constructor() : ImageLibBootStrap {
         lib = DogImageLib()
         this.policy = policy ?: DogImageLibPolicy.optimum()
         return lib!!
+    }
+
+    override suspend fun getImage(): String {
+        val no = pageNo
+        pageNo++
+        return lib!!.dogRepo!!.getSingleDogImage(pageNo = no)
+    }
+
+    override suspend fun getImages(count: Int): List<String> {
+        val no = pageNo
+        pageNo += count
+        return lib!!.dogRepo!!.getRandomDogImages(count = count, pageNo = no)
+    }
+
+    override suspend fun getNextImage(): String {
+        pageNo++
+        return lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
+    }
+
+    override suspend fun getPreviousImage(): String {
+        if (pageNo > 1) {
+            pageNo--
+        }
+        return lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
     }
 
 }
@@ -87,10 +111,10 @@ class DogImageLibPolicy(
 }
 
 interface ImageLibMethods {
-    fun getImage(): String
-    fun getImages(count: Int): List<String>
-    fun getNextImage(): String
-    fun getPreviousImage() : String
+    suspend fun getImage(): String
+    suspend fun getImages(count: Int): List<String>
+    suspend fun getNextImage(): String
+    suspend fun getPreviousImage() : String
 }
 
 interface ImageLibBootStrap {

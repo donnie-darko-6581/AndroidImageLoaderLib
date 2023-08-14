@@ -12,7 +12,7 @@ class DogRepository(
      * Method which tries to get images from db, if they are lacking use api to download
      * If there is nothing in DB, we fetch from api
      */
-    suspend fun getRandomDogImages(count: Int): List<String> {
+    suspend fun getRandomDogImages(count: Int, pageNo: Int): List<String> {
         val dogEntitiesFromDb = dogDao.getAllDogs(count = count)
         val dbCount = dogDao.count()
 
@@ -39,8 +39,8 @@ class DogRepository(
     /**
      * Get single image from db
      */
-    suspend fun getSingleDogImage(): String {
-        val dogEntitiesFromDb = dogDao.getAllDogs(1)
+    suspend fun getSingleDogImage(pageNo: Int): String {
+        val dogEntitiesFromDb = dogDao.getDog(pageNo = pageNo)
 
         // If data exists in the database, return a random item
         if (dogEntitiesFromDb.isNotEmpty()) {
