@@ -42,7 +42,7 @@ class DogImageLib private constructor() : ImageLibBootStrap, ImageLibMethods {
             lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
 
             // load next few images
-            lib!!.dogRepo!!.getRandomDogImages(count = policy!!.prefetchCount, pageNo = pageNo)
+            lib!!.dogRepo!!.getRandomDogImages(count = policy!!.prefetchCount)
         }
     }
 
@@ -53,15 +53,11 @@ class DogImageLib private constructor() : ImageLibBootStrap, ImageLibMethods {
     }
 
     override suspend fun getImage(): String {
-        val no = pageNo
-        pageNo++
-        return lib!!.dogRepo!!.getSingleDogImage(pageNo = no)
+        return lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
     }
 
     override suspend fun getImages(count: Int): List<String> {
-        val no = pageNo
-        pageNo += count
-        return lib!!.dogRepo!!.getRandomDogImages(count = count, pageNo = no)
+        return lib!!.dogRepo!!.getRandomDogImages(count = count)
     }
 
     override suspend fun getNextImage(): String {
