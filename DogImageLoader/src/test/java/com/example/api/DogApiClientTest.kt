@@ -2,6 +2,7 @@ package com.example.api
 
 import com.example.dogimageloader.api.DogApiClient
 import com.example.dogimageloader.api.DogApiService
+import com.example.dogimageloader.api.response.MultipleDogs
 import com.example.dogimageloader.api.response.SingleDog
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -18,7 +19,8 @@ class DogApiClientTest {
     fun `test generate random dog success`() {
 
         val imageUrl = "https://some-dog-image"
-        val mockResponse = SingleDog(imageUrl)
+        val status = "success"
+        val mockResponse = SingleDog(imageUrl = imageUrl, status = status)
         runBlocking {
             `when`(mockApiService.getRandomDogImage()).thenReturn(mockResponse)
             val result = dogApiClient.singleDog()
@@ -33,4 +35,19 @@ class DogApiClientTest {
             dogApiClient.singleDog()
         }
     }
+
+    @Test
+    fun testGetRandomDogImages_Success() = runBlocking {
+        val imageUrls = listOf("https://example.com/dog1.jpg", "https://example.com/dog2.jpg")
+        val status = "success"
+        val mockResponse = MultipleDogs(imageUrls = imageUrls, status = status)
+        `when`(mockApiService.getRandomDogImages(2)).thenReturn(mockResponse)
+
+        val result = dogApiClient.multipleDogs(2)
+
+        assertEquals(imageUrls.size, result.imageUrls.size)
+        assertEquals(imageUrls[0], result.imageUrls[0])
+        assertEquals(imageUrls[1], result.imageUrls[1])
+    }
+
 }
