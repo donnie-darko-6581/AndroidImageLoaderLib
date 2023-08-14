@@ -1,16 +1,48 @@
 package com.example.dogimageloader
 
-class DogImageLib: ImageLibBootStrap {
+import android.content.Context
+import com.example.db.DogDbSingleton
+import com.example.dogimageloader.api.DogApiClient
+import com.example.dogimageloader.api.DogApiServiceProvider
+import com.example.repo.DogRepository
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+
+class DogImageLib private constructor() : ImageLibBootStrap {
 
     private var lib: DogImageLib? = null
     private var policy: DogImageLibPolicy? = null
 
-    override fun init(policy: DogImageLibPolicy?) {
+    private var dogRepo: DogRepository? = null
+
+    // we need to maintain state to have functions like prev/next image
+    private var pageNo: Int = 1
+
+    override fun init(
+        context: Context,
+        policy: DogImageLibPolicy?
+    ) {
         synchronized(this) {
             if (lib == null) {
-                createInstance(policy)
-                // fetch initial images
+                createInstance(policy = policy)
+                load(context = context)
             }
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun load(context: Context) {
+        lib!!.dogRepo = DogRepository(
+            dogApiClient = DogApiClient(apiService = DogApiServiceProvider.service()),
+            dogDao = DogDbSingleton.instance(context = context).dogDao()
+        )
+        GlobalScope.launch {
+            // loading first image separately for smooth ui
+            lib!!.dogRepo!!.getSingleDogImage()
+
+            // load next few images
+            lib!!.dogRepo!!.getRandomDogImages(policy!!.prefetchCount)
         }
     }
 
@@ -62,5 +94,8 @@ interface ImageLibMethods {
 }
 
 interface ImageLibBootStrap {
-    fun init(policy: DogImageLibPolicy?)
+    fun init(
+        context: Context,
+        policy: DogImageLibPolicy?
+    )
 }
