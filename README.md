@@ -36,6 +36,8 @@ Please refer to this Dog.ceo link for API documentation
 
 
 ### **Approach**
+_Note: Used suspend functions in library assuming it is only for android, we should hide this detail
+to make lib generic across platforms_
 
 1. Used Android library for dog images fetching
 2. it contains deps for lib like okhttp and retrofit and coroutines
