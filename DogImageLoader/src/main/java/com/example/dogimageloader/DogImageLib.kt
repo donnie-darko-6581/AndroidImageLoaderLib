@@ -11,13 +11,22 @@ import kotlinx.coroutines.launch
 
 class DogImageLib private constructor() : ImageLibBootStrap, ImageLibMethods {
 
-    private var lib: DogImageLib? = null
     private var policy: DogImageLibPolicy? = null
 
     private var dogRepo: DogRepository? = null
 
     // we need to maintain state to have functions like prev/next image
     private var pageNo: Int = 1
+
+    companion object {
+        private var lib: DogImageLib? = null
+
+        fun getInstance(): DogImageLib {
+            lib?.let {
+                return it
+            } ?: throw Exception("Trying to use Dog lib without initialisation")
+        }
+    }
 
     override fun init(
         context: Context,
