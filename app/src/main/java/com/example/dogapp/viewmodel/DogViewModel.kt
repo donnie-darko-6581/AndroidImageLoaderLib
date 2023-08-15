@@ -7,20 +7,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class DogViewModel: ViewModel() {
+class DogViewModel(
+    private val dogImageLib: DogImageLib = DogImageLib.getInstance()
+): ViewModel() {
 
     private val dogImages = mutableListOf<String>()
 
     private val _dogImageFlow = MutableStateFlow<String?>(null)
     val currentDog: StateFlow<String?> = _dogImageFlow
 
-    private val dogImageLib = DogImageLib.getInstance()
 
     init {
         fetchFirstDog()
     }
 
-    private fun fetchFirstDog() {
+    // TODO made public for testing, there are better ways to handle
+    fun fetchFirstDog() {
         viewModelScope.launch {
             val imageUrl = dogImageLib.getImage()
             dogImages.add(imageUrl)

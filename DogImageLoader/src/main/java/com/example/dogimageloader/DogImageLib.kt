@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class DogImageLib private constructor() : ImageLibMethods {
+// TODO : made open for testing, there are better ways to handle, mockito2/other libs
+open class DogImageLib private constructor() : ImageLibMethods {
 
     private var dogRepo: DogRepository? = null
 
