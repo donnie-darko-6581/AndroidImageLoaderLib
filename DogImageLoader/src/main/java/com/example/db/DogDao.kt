@@ -17,7 +17,7 @@ interface DogDao {
     suspend fun getAllDogs(count: Int): List<String>
 
     @Query("SELECT imageUrl FROM dogImages WHERE id = :pageNo")
-    suspend fun getDog(pageNo: Int): List<String>
+    suspend fun getDog(pageNo: Long): List<String>
 
     @Query("SELECT COUNT(*) FROM dogImages")
     suspend fun count(): Int

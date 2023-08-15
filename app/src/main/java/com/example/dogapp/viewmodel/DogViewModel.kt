@@ -43,4 +43,11 @@ class DogViewModel: ViewModel() {
             _dogImageFlow.value = imageUrl
         }
     }
+
+    fun fetchAndSaveMultipleDogs(count: String) {
+        viewModelScope.launch {
+            // note: we can call toInt() safely as kb allows only nums
+            dogImageLib.getImages(count = count.toInt())
+        }
+    }
 }

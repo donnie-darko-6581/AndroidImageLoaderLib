@@ -2,6 +2,7 @@ package com.example.dogapp
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -71,11 +73,15 @@ fun DogImageScreen(viewModel: DogViewModel) {
     val dogImage by viewModel.currentDog.collectAsState()
     val showDialog =  remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+
     if (showDialog.value) {
         CustomDialog(value = "", setShowDialog = {
             showDialog.value = it
-        }) {
-            Log.i("MainActivity", "MainActivity dialog : $it")
+        }) { count ->
+            Log.i("MainActivity", "MainActivity dialog - fetching dog items : $count")
+            Toast.makeText(context.applicationContext, "Fetching $count images", Toast.LENGTH_SHORT).show()
+            viewModel.fetchAndSaveMultipleDogs(count)
         }
     }
 
@@ -111,7 +117,7 @@ fun DogImageScreen(viewModel: DogViewModel) {
                     painter = rememberImagePainter(data = dogImage),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.FillWidth
                 )
             }
 
@@ -135,9 +141,6 @@ fun DogImageScreen(viewModel: DogViewModel) {
             }
         }
     }
-
-
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

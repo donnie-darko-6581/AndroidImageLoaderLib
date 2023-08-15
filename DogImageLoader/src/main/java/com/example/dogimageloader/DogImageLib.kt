@@ -20,7 +20,7 @@ class DogImageLib private constructor() : ImageLibMethods {
         private var policy: DogImageLibPolicy? = null
 
         // we need to maintain state to have functions like prev/next image
-        private var pageNo: Int = 1
+        private var pageNo: Long = 1
 
         private val mutex = Mutex()
 
@@ -79,9 +79,7 @@ class DogImageLib private constructor() : ImageLibMethods {
     }
 
     override suspend fun getImages(count: Int): List<String> {
-        mutex.withLock {
-            return lib!!.dogRepo!!.getRandomDogImages(count = count)
-        }
+        return lib!!.dogRepo!!.getRandomDogImages(count = count)
     }
 
     override suspend fun getNextImage(): String {

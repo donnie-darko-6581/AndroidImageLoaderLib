@@ -28,8 +28,11 @@ class DogRepository(
 
         // Save the API response to the database
         dogDao.insertAll(
-            dogApiResponse.imageUrls.map { url ->
-                DogEntity(imageUrl = url)
+            dogApiResponse.imageUrls.mapIndexed { index, url ->
+                DogEntity(
+                    id = dbCount.toLong() + index + 1,
+                    imageUrl = url
+                )
             }
         )
 
@@ -40,7 +43,7 @@ class DogRepository(
     /**
      * Get single image from db
      */
-    suspend fun getSingleDogImage(pageNo: Int): String {
+    suspend fun getSingleDogImage(pageNo: Long): String {
         val dogEntitiesFromDb = dogDao.getDog(pageNo = pageNo)
 
         // If data exists in the database, return a random item
@@ -51,7 +54,7 @@ class DogRepository(
 
         // If the database is empty, fetch data from the API
         val dogApiResponse = dogApiClient.singleDog()
-        val dogEntity = DogEntity(id = pageNo.toLong(), imageUrl = dogApiResponse.imageUrl)
+        val dogEntity = DogEntity(id = pageNo, imageUrl = dogApiResponse.imageUrl)
         // Save in db
         dogDao.insert(dogEntity)
         Log.i("DogRepository", "single dog image from api, total count: " + dogDao.count())
