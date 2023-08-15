@@ -21,10 +21,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,7 +47,6 @@ import coil.compose.rememberImagePainter
 import com.example.dogapp.ui.theme.DogAppTheme
 import com.example.dogapp.viewmodel.DogViewModel
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +65,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DogImageScreen(viewModel: DogViewModel) {
     val dogImage by viewModel.currentDog.collectAsState()
@@ -76,42 +79,65 @@ fun DogImageScreen(viewModel: DogViewModel) {
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxSize()
-        ) {
-            Image(
-                painter = rememberImagePainter(data = dogImage),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+    Scaffold(
+        topBar = {
+            Surface(
+                shadowElevation = 4.dp
+            ) {
+                TopAppBar(
+                    title = {
+                        Text(text = "Dogs For You")
+                    },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
-
-        Row(
+    ) { pv ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(pv)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom
         ) {
-            Button(onClick = { viewModel.loadPreviousDog() }) {
-                Text(text = "Previous")
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+            ) {
+                Image(
+                    painter = rememberImagePainter(data = dogImage),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
             }
 
-            Button(onClick = { showDialog.value = true }) {
-                Text(text = "Fetch")
-            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(onClick = { viewModel.loadPreviousDog() }) {
+                    Text(text = "Previous")
+                }
 
-            Button(onClick = { viewModel.loadNextDog() }) {
-                Text(text = "Next")
+                Button(onClick = { showDialog.value = true }) {
+                    Text(text = "Fetch")
+                }
+
+                Button(onClick = { viewModel.loadNextDog() }) {
+                    Text(text = "Next")
+                }
             }
         }
     }
+
+
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
