@@ -2,6 +2,7 @@ package com.example.dogapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dogimageloader.DogImageLib
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -11,26 +12,31 @@ class DogViewModel: ViewModel() {
     private val dogImages = mutableListOf<String>()
 
     private val _dogImageFlow = MutableStateFlow<String?>(null)
-    val dogImageFlow: StateFlow<String?> = _dogImageFlow
+    val currentDog: StateFlow<String?> = _dogImageFlow
 
-    init {
-        fetchRandomDog()
-    }
+    private val dogImageLib = DogImageLib.getInstance()
 
     fun fetchRandomDog() {
         viewModelScope.launch {
-            val imageUrl = ""
-            imageUrl.let {
-                dogImages.add(it)
-                _dogImageFlow.value = it
-            }
+            val imageUrl = dogImageLib.getImage()
+            dogImages.add(imageUrl)
+            _dogImageFlow.value = imageUrl
         }
     }
 
     fun loadNextDog() {
-
+        viewModelScope.launch {
+            val imageUrl = dogImageLib.getNextImage()
+            dogImages.add(imageUrl)
+            _dogImageFlow.value = imageUrl
+        }
     }
 
     fun loadPreviousDog() {
+        viewModelScope.launch {
+            val imageUrl = dogImageLib.getPreviousImage()
+            dogImages.add(imageUrl)
+            _dogImageFlow.value = imageUrl
+        }
     }
 }

@@ -36,10 +36,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.dogapp.ui.theme.DogAppTheme
 import com.example.dogapp.viewmodel.DogViewModel
@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun DogImageScreen(viewModel: DogViewModel) {
-    val dogImage by viewModel.dogImageFlow.collectAsState()
+    val dogImage by viewModel.currentDog.collectAsState()
     val showDialog =  remember { mutableStateOf(false) }
 
     if (showDialog.value) {
@@ -85,14 +85,12 @@ fun DogImageScreen(viewModel: DogViewModel) {
                 .weight(1f)
                 .fillMaxSize()
         ) {
-            if (dogImage != null) {
-                Image(
-                    painter = rememberImagePainter(data = dogImage),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            Image(
+                painter = rememberImagePainter(data = dogImage),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
         }
 
         Row(
@@ -118,7 +116,11 @@ fun DogImageScreen(viewModel: DogViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (String) -> Unit) {
+fun CustomDialog(
+    value: String,
+    setShowDialog: (Boolean) -> Unit,
+    setValue: (String) -> Unit
+) {
 
     val txtFieldError = remember { mutableStateOf("") }
     val txtField = remember { mutableStateOf(value) }
