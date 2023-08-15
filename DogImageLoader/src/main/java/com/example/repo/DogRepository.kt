@@ -5,7 +5,7 @@ import com.example.db.DogDao
 import com.example.db.DogEntity
 import com.example.dogimageloader.api.DogApiClient
 
-class DogRepository(
+internal class DogRepository(
     private val dogApiClient: DogApiClient,
     private val dogDao: DogDao
 ) {

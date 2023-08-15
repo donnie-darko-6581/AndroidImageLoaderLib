@@ -5,7 +5,7 @@ import com.example.dogimageloader.api.response.SingleDog
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface DogApiService {
+internal interface DogApiService {
 
     @GET("breeds/image/random")
     suspend fun getRandomDogImage(): SingleDog

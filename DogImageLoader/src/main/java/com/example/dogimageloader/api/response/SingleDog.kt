@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class SingleDog(
+internal data class SingleDog(
     @Json(name = "message")
     val imageUrl: String,
     @Json(name = "status")

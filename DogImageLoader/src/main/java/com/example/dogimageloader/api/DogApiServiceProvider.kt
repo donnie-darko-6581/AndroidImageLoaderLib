@@ -4,7 +4,7 @@ import com.squareup.moshi.Moshi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-object DogApiServiceProvider {
+internal object DogApiServiceProvider {
 
     private const val BASE_URL = "https://dog.ceo/api/"
 

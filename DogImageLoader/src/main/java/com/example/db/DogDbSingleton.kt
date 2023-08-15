@@ -3,7 +3,7 @@ package com.example.db
 import android.content.Context
 import androidx.room.Room
 
-object DogDbSingleton {
+internal object DogDbSingleton {
     private var instance: DogDatabase? = null
 
     fun instance(context: Context): DogDatabase {

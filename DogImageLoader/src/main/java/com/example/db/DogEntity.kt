@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "dogImages")
-data class DogEntity(
+internal data class DogEntity(
     @PrimaryKey
     val id: Long = 1, // Add an ID field for unique identification
     val imageUrl: String
