@@ -1,7 +1,10 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id("com.google.devtools.ksp").version("1.6.10-1.0.4")
+    //id("com.google.devtools.ksp").version("1.6.10-1.0.4")
+
+    //Room
+    id 'kotlin-kapt'
 }
 
 android {
@@ -40,15 +43,19 @@ dependencies {
 
     implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
     implementation "com.squareup.moshi:moshi:1.14.0"
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+    //ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
 
     String room_version = "2.5.2"
 
     implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
 
     // To use Kotlin Symbol Processing (KSP)
-    ksp("androidx.room:room-compiler:$room_version")
+    //ksp("androidx.room:room-compiler:$room_version")
+
+    implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.mockito:mockito-core:4.2.0"
