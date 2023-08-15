@@ -8,6 +8,7 @@ class DogApp: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        DogImageLib.getInstance()
+        // Init lib instance
+        DogImageLib.init(context = this)
     }
 }

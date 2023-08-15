@@ -22,7 +22,7 @@ class DogImageLib private constructor() : ImageLibMethods {
 
         fun init(
             context: Context,
-            policy: DogImageLibPolicy?
+            policy: DogImageLibPolicy = DogImageLibPolicy.optimum()
         ) {
             synchronized(this) {
                 if (lib == null) {
@@ -47,9 +47,9 @@ class DogImageLib private constructor() : ImageLibMethods {
             }
         }
 
-        private fun createInstance(policy: DogImageLibPolicy?): DogImageLib {
+        private fun createInstance(policy: DogImageLibPolicy): DogImageLib {
             lib = DogImageLib()
-            this.policy = policy ?: DogImageLibPolicy.optimum()
+            this.policy = policy
             return lib!!
         }
 
