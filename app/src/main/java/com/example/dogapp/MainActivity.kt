@@ -126,69 +126,67 @@ fun CustomDialog(
     val txtField = remember { mutableStateOf(value) }
 
     Dialog(onDismissRequest = { setShowDialog(false) }) {
-        DogAppTheme {
-
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = Color.White
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = Color.White
+        ) {
+            Box(
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
+                Column(modifier = Modifier.padding(20.dp)) {
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Fetch images"
-                            )
-                        }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Fetch images"
+                        )
+                    }
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                        TextField(
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(
+                                BorderStroke(
+                                    width = 2.dp,
+                                    color = colorResource(id = if (txtFieldError.value.isEmpty()) android.R.color.holo_green_light else android.R.color.holo_red_dark)
+                                ),
+                                shape = RoundedCornerShape(50)
+                            ),
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color.White,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        placeholder = { Text(text = "input number") },
+                        value = txtField.value,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        onValueChange = {
+                            txtField.value = it.take(10)
+                        })
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
+                        Button(
+                            onClick = {
+                                if (txtField.value.isEmpty()) {
+                                    txtFieldError.value = "Field can not be empty"
+                                    return@Button
+                                }
+                                setValue(txtField.value)
+                                setShowDialog(false)
+                            },
+                            shape = RoundedCornerShape(50.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(
-                                    BorderStroke(
-                                        width = 2.dp,
-                                        color = colorResource(id = if (txtFieldError.value.isEmpty()) android.R.color.holo_green_light else android.R.color.holo_red_dark)
-                                    ),
-                                    shape = RoundedCornerShape(50)
-                                ),
-                            colors = TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            placeholder = { Text(text = "input number") },
-                            value = txtField.value,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            onValueChange = {
-                                txtField.value = it.take(10)
-                            })
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
-                            Button(
-                                onClick = {
-                                    if (txtField.value.isEmpty()) {
-                                        txtFieldError.value = "Field can not be empty"
-                                        return@Button
-                                    }
-                                    setValue(txtField.value)
-                                    setShowDialog(false)
-                                },
-                                shape = RoundedCornerShape(50.dp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp)
-                            ) {
-                                Text(text = "Fetch")
-                            }
+                                .height(50.dp)
+                        ) {
+                            Text(text = "Fetch")
                         }
                     }
                 }
