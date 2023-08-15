@@ -4,15 +4,12 @@ import com.example.dogimageloader.api.DogApiClient
 import com.example.dogimageloader.api.DogApiService
 import com.example.dogimageloader.api.response.MultipleDogs
 import com.example.dogimageloader.api.response.SingleDog
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
 // TODO : We can use Testing lib for coroutines, this will block test thread, avoiding for simplicity
 class DogApiClientTest {

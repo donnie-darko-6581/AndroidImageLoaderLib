@@ -4,12 +4,8 @@ import com.example.db.DogDao
 import com.example.dogimageloader.api.DogApiClient
 import com.example.dogimageloader.api.response.MultipleDogs
 import com.example.dogimageloader.api.response.SingleDog
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
@@ -18,7 +14,6 @@ import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -31,7 +26,6 @@ class DogRepositoryTest {
     internal lateinit var dogDao: DogDao
 
     private lateinit var dogRepository: DogRepository
-
 
     @Test
     fun `test getRandomDogImages with data in DB`() = runBlocking {
