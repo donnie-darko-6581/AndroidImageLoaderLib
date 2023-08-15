@@ -74,6 +74,7 @@ things, mentioning things below which come on top of my mind.
 11. KSP could be used instead of Kapt, it requires more time to explore
 12. Could avoid heavy libs in ImageLoaderLib to keep size small
 13. Release best practices not followed
+14. Image Loading singleton using Coil, deprecated func to load image
 
 
 _For more detailed insights follow commit history._
