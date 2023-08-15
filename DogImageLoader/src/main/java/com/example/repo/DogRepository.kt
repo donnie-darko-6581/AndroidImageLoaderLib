@@ -1,5 +1,6 @@
 package com.example.repo
 
+import android.util.Log
 import com.example.db.DogDao
 import com.example.db.DogEntity
 import com.example.dogimageloader.api.DogApiClient
@@ -44,14 +45,16 @@ class DogRepository(
 
         // If data exists in the database, return a random item
         if (dogEntitiesFromDb.isNotEmpty()) {
+            Log.i("DogRepository", "single dog image $pageNo")
             return dogEntitiesFromDb[0]
         }
 
         // If the database is empty, fetch data from the API
         val dogApiResponse = dogApiClient.singleDog()
-        val dogEntity = DogEntity(imageUrl = dogApiResponse.imageUrl)
+        val dogEntity = DogEntity(id = pageNo.toLong(), imageUrl = dogApiResponse.imageUrl)
         // Save in db
-        dogDao.insertAll(listOf(dogEntity))
+        dogDao.insert(dogEntity)
+        Log.i("DogRepository", "single dog image from api, total count: " + dogDao.count())
 
         return dogApiResponse.imageUrl
     }

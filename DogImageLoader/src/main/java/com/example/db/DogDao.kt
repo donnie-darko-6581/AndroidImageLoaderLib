@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface DogDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(dogs: DogEntity)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(dogs: List<DogEntity>)
