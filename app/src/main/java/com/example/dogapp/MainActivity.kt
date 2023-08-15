@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -112,6 +113,11 @@ fun DogImageScreen(viewModel: DogViewModel) {
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize()
+                    .paint(
+                        painter = rememberImagePainter(data = dogImage),
+                        contentScale = ContentScale.Crop,
+                        alpha = 0.2f
+                    )
             ) {
                 Image(
                     painter = rememberImagePainter(data = dogImage),
