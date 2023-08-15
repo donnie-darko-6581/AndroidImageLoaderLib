@@ -6,6 +6,7 @@ import com.example.dogimageloader.api.DogApiClient
 import com.example.dogimageloader.api.DogApiServiceProvider
 import com.example.repo.DogRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -40,7 +41,7 @@ class DogImageLib private constructor() : ImageLibMethods {
         private fun load(context: Context) {
             val db = DogDbSingleton.instance(context = context)
             lib!!.dogRepo = DogRepository(
-                dogApiClient = DogApiClient(apiService = DogApiServiceProvider.service()),
+                dogApiClient = DogApiClient(apiService = DogApiServiceProvider.service(), context = Dispatchers.IO),
                 dogDao = db.dogDao()
             )
             GlobalScope.launch {

@@ -61,6 +61,4 @@ internal class DogRepository(
 
         return dogApiResponse.imageUrl
     }
-
-
 }

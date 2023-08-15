@@ -4,7 +4,12 @@ import com.example.dogimageloader.api.DogApiClient
 import com.example.dogimageloader.api.DogApiService
 import com.example.dogimageloader.api.response.MultipleDogs
 import com.example.dogimageloader.api.response.SingleDog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.Mockito.*
@@ -13,7 +18,10 @@ import org.mockito.Mockito.*
 class DogApiClientTest {
 
     private val mockApiService: DogApiService = mock(DogApiService::class.java)
-    private val dogApiClient = DogApiClient(mockApiService)
+
+    private val testDispatcher = StandardTestDispatcher()
+    private val dogApiClient = DogApiClient(mockApiService, testDispatcher)
+
 
     @Test
     fun `test generate random dog success`() {
