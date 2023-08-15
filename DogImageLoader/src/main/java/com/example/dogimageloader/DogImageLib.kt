@@ -40,10 +40,13 @@ class DogImageLib private constructor() : ImageLibMethods {
             )
             GlobalScope.launch {
                 // loading first image separately for smooth ui
-                lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
+                val image = lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
 
                 // load next few images
-                lib!!.dogRepo!!.getRandomDogImages(count = policy!!.prefetchCount)
+                if (image != null) {
+                    // make sure first call is successful
+                    lib!!.dogRepo!!.getRandomDogImages(count = policy!!.prefetchCount)
+                }
             }
         }
 
