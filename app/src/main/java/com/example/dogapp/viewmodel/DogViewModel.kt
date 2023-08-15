@@ -16,6 +16,10 @@ class DogViewModel: ViewModel() {
 
     private val dogImageLib = DogImageLib.getInstance()
 
+    init {
+        fetchRandomDog()
+    }
+
     fun fetchRandomDog() {
         viewModelScope.launch {
             val imageUrl = dogImageLib.getImage()
