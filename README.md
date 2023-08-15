@@ -1,7 +1,9 @@
 # AndroidImageLoaderLib
-Problem: Create android lib to fetch dog images and show them in an android app.
 
-**Original problem statement:**
+## Problem: Create android lib to fetch dog images and show them in an android app.
+
+### **Original problem statement:**
+
 Create an Android library to fetch Dog images on the initialization of the library. The library 
 should have a few helper methods listed below :-
 
@@ -33,7 +35,7 @@ Sample JSON response -
 Please refer to this Dog.ceo link for API documentation
 
 
-**Approach**
+### **Approach**
 
 1. Used Android library for dog images fetching
 2. it contains deps for lib like okhttp and retrofit and coroutines
@@ -55,7 +57,7 @@ Please refer to this Dog.ceo link for API documentation
 
 
 
-Notable TODOs:
+### **Notable TODOs/ Improvement Scope:**
 The scope of problem statement is really big and there can be noticeable advances made in various 
 things, mentioning things below which come on top of my mind.
 
@@ -74,4 +76,4 @@ things, mentioning things below which come on top of my mind.
 13. Release best practices not followed
 
 
-For more detailed insights follow commit history.
+_For more detailed insights follow commit history._
