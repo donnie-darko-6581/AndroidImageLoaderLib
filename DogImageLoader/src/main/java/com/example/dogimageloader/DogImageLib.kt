@@ -99,6 +99,10 @@ open class DogImageLib private constructor() : ImageLibMethods {
             return lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
         }
     }
+
+    fun hasPrevious() = pageNo > 1
+
+    fun hasNext() = true // we can use total dog images cond here in real world app
 }
 
 /**

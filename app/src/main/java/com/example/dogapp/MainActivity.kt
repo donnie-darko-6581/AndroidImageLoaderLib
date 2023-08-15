@@ -73,6 +73,8 @@ class MainActivity : ComponentActivity() {
 fun DogImageScreen(viewModel: DogViewModel) {
     val dogImage by viewModel.currentDog.collectAsState()
     val showDialog =  remember { mutableStateOf(false) }
+    val prevFlow by viewModel.prevFlow.collectAsState()
+    val nextFlow by viewModel.nextFlow.collectAsState()
 
     val context = LocalContext.current
 
@@ -133,7 +135,10 @@ fun DogImageScreen(viewModel: DogViewModel) {
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Button(onClick = { viewModel.loadPreviousDog() }) {
+                Button(
+                    onClick = { viewModel.loadPreviousDog() },
+                    enabled = prevFlow
+                ) {
                     Text(text = "Previous")
                 }
 
@@ -141,7 +146,10 @@ fun DogImageScreen(viewModel: DogViewModel) {
                     Text(text = "Fetch")
                 }
 
-                Button(onClick = { viewModel.loadNextDog() }) {
+                Button(
+                    onClick = { viewModel.loadNextDog() },
+                    enabled = nextFlow
+                ) {
                     Text(text = "Next")
                 }
             }

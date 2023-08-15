@@ -11,11 +11,14 @@ class DogViewModel(
     private val dogImageLib: DogImageLib = DogImageLib.getInstance()
 ): ViewModel() {
 
-    private val dogImages = mutableListOf<String>()
-
     private val _dogImageFlow = MutableStateFlow<String?>(null)
     val currentDog: StateFlow<String?> = _dogImageFlow
 
+    private val _prevFlow = MutableStateFlow<Boolean>(false)
+    val prevFlow: StateFlow<Boolean> = _prevFlow
+
+    private val _nextFlow = MutableStateFlow<Boolean>(true)
+    val nextFlow: StateFlow<Boolean> = _nextFlow
 
     init {
         fetchFirstDog()
@@ -25,24 +28,27 @@ class DogViewModel(
     fun fetchFirstDog() {
         viewModelScope.launch {
             val imageUrl = dogImageLib.getImage()
-            dogImages.add(imageUrl)
             _dogImageFlow.value = imageUrl
+            _prevFlow.value = dogImageLib.hasPrevious()
+            _nextFlow.value = dogImageLib.hasNext()
         }
     }
 
     fun loadNextDog() {
         viewModelScope.launch {
             val imageUrl = dogImageLib.getNextImage()
-            dogImages.add(imageUrl)
             _dogImageFlow.value = imageUrl
+            _prevFlow.value = dogImageLib.hasPrevious()
+            _nextFlow.value = dogImageLib.hasNext()
         }
     }
 
     fun loadPreviousDog() {
         viewModelScope.launch {
             val imageUrl = dogImageLib.getPreviousImage()
-            dogImages.add(imageUrl)
             _dogImageFlow.value = imageUrl
+            _prevFlow.value = dogImageLib.hasPrevious()
+            _nextFlow.value = dogImageLib.hasNext()
         }
     }
 
