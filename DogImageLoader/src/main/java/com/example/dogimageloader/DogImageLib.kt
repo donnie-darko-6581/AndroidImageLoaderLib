@@ -9,56 +9,55 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class DogImageLib private constructor() : ImageLibBootStrap, ImageLibMethods {
-
-    private var policy: DogImageLibPolicy? = null
+class DogImageLib private constructor() : ImageLibMethods {
 
     private var dogRepo: DogRepository? = null
 
-    // we need to maintain state to have functions like prev/next image
-    private var pageNo: Int = 1
-
     companion object {
         private var lib: DogImageLib? = null
+        private var policy: DogImageLibPolicy? = null
+
+        // we need to maintain state to have functions like prev/next image
+        private var pageNo: Int = 1
+
+        fun init(
+            context: Context,
+            policy: DogImageLibPolicy?
+        ) {
+            synchronized(this) {
+                if (lib == null) {
+                    createInstance(policy = policy)
+                    load(context = context)
+                }
+            }
+        }
+
+        @OptIn(DelicateCoroutinesApi::class)
+        private fun load(context: Context) {
+            lib!!.dogRepo = DogRepository(
+                dogApiClient = DogApiClient(apiService = DogApiServiceProvider.service()),
+                dogDao = DogDbSingleton.instance(context = context).dogDao()
+            )
+            GlobalScope.launch {
+                // loading first image separately for smooth ui
+                lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
+
+                // load next few images
+                lib!!.dogRepo!!.getRandomDogImages(count = policy!!.prefetchCount)
+            }
+        }
+
+        private fun createInstance(policy: DogImageLibPolicy?): DogImageLib {
+            lib = DogImageLib()
+            this.policy = policy ?: DogImageLibPolicy.optimum()
+            return lib!!
+        }
 
         fun getInstance(): DogImageLib {
             lib?.let {
                 return it
             } ?: throw Exception("Trying to use Dog lib without initialisation")
         }
-    }
-
-    override fun init(
-        context: Context,
-        policy: DogImageLibPolicy?
-    ) {
-        synchronized(this) {
-            if (lib == null) {
-                createInstance(policy = policy)
-                load(context = context)
-            }
-        }
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun load(context: Context) {
-        lib!!.dogRepo = DogRepository(
-            dogApiClient = DogApiClient(apiService = DogApiServiceProvider.service()),
-            dogDao = DogDbSingleton.instance(context = context).dogDao()
-        )
-        GlobalScope.launch {
-            // loading first image separately for smooth ui
-            lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
-
-            // load next few images
-            lib!!.dogRepo!!.getRandomDogImages(count = policy!!.prefetchCount)
-        }
-    }
-
-    private fun createInstance(policy: DogImageLibPolicy?): DogImageLib {
-        lib = DogImageLib()
-        this.policy = policy ?: DogImageLibPolicy.optimum()
-        return lib!!
     }
 
     override suspend fun getImage(): String {
@@ -120,11 +119,4 @@ interface ImageLibMethods {
     suspend fun getImages(count: Int): List<String>
     suspend fun getNextImage(): String
     suspend fun getPreviousImage() : String
-}
-
-interface ImageLibBootStrap {
-    fun init(
-        context: Context,
-        policy: DogImageLibPolicy?
-    )
 }
