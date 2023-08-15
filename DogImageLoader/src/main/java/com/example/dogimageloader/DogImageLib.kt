@@ -8,6 +8,8 @@ import com.example.repo.DogRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class DogImageLib private constructor() : ImageLibMethods {
 
@@ -19,6 +21,8 @@ class DogImageLib private constructor() : ImageLibMethods {
 
         // we need to maintain state to have functions like prev/next image
         private var pageNo: Int = 1
+
+        private val mutex = Mutex()
 
         fun init(
             context: Context,
@@ -34,18 +38,23 @@ class DogImageLib private constructor() : ImageLibMethods {
 
         @OptIn(DelicateCoroutinesApi::class)
         private fun load(context: Context) {
+            val db = DogDbSingleton.instance(context = context)
             lib!!.dogRepo = DogRepository(
                 dogApiClient = DogApiClient(apiService = DogApiServiceProvider.service()),
-                dogDao = DogDbSingleton.instance(context = context).dogDao()
+                dogDao = db.dogDao()
             )
             GlobalScope.launch {
-                // loading first image separately for smooth ui
-                val image = lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
+                mutex.withLock {
+                    db.clearAllTables() // doing this for fresh app behaviour on each launch
 
-                // load next few images
-                if (image != null) {
-                    // make sure first call is successful
-                    lib!!.dogRepo!!.getRandomDogImages(count = policy!!.prefetchCount)
+                    // loading first image separately for smooth ui
+                    val image = lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
+
+                    // load next few images
+                    if (image != null) {
+                        // make sure first call is successful
+                        lib!!.dogRepo!!.getRandomDogImages(count = policy!!.prefetchCount)
+                    }
                 }
             }
         }
@@ -64,25 +73,32 @@ class DogImageLib private constructor() : ImageLibMethods {
     }
 
     override suspend fun getImage(): String {
-        return lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
+        mutex.withLock {
+            return lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
+        }
     }
 
     override suspend fun getImages(count: Int): List<String> {
-        return lib!!.dogRepo!!.getRandomDogImages(count = count)
+        mutex.withLock {
+            return lib!!.dogRepo!!.getRandomDogImages(count = count)
+        }
     }
 
     override suspend fun getNextImage(): String {
-        pageNo++
-        return lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
+        mutex.withLock {
+            pageNo++
+            return lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
+        }
     }
 
     override suspend fun getPreviousImage(): String {
-        if (pageNo > 1) {
-            pageNo--
+        mutex.withLock {
+            if (pageNo > 1) {
+                pageNo--
+            }
+            return lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
         }
-        return lib!!.dogRepo!!.getSingleDogImage(pageNo = pageNo)
     }
-
 }
 
 /**

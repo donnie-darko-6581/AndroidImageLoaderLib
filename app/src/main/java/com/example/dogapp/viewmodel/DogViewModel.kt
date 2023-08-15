@@ -17,10 +17,10 @@ class DogViewModel: ViewModel() {
     private val dogImageLib = DogImageLib.getInstance()
 
     init {
-        fetchRandomDog()
+        fetchFirstDog()
     }
 
-    fun fetchRandomDog() {
+    private fun fetchFirstDog() {
         viewModelScope.launch {
             val imageUrl = dogImageLib.getImage()
             dogImages.add(imageUrl)
